@@ -1,0 +1,93 @@
+##############################################################
+
+import("//react-native/common.gni")
+
+config("ReanimatedModule_config") {
+  include_dirs = [
+    ".",
+  ]
+}
+
+config("ReanimatedModule_common_config") {
+  cflags_cc = [ "-std=c++17"]
+  cflags_cc += [
+    "-Wno-header-hygiene",
+    "-Wno-sign-compare",
+    "-Wno-unreachable-code",
+  ]
+  include_dirs = [ 
+    "..",
+    "../Common/cpp/headers/NativeModules/",
+    "../Common/cpp/headers/Registries/",
+    "../Common/cpp/headers/SpecTools/",
+    "../Common/cpp/headers/SpecTools/",
+    "../Common/cpp/headers/SharedItems/",
+    "../Common/cpp/headers/Tools/",
+  ]
+}
+
+source_set("ReanimatedModule_common") {
+  sources = [
+    "../Common/cpp/NativeModules/NativeReanimatedModule.cpp",
+    "../Common/cpp/NativeModules/NativeReanimatedModuleSpec.cpp",
+    "../Common/cpp/Registries/EventHandlerRegistry.cpp",
+    "../Common/cpp/Registries/MapperRegistry.cpp",
+    "../Common/cpp/Registries/WorkletsCache.cpp",
+    "../Common/cpp/SharedItems/FrozenObject.cpp",
+    "../Common/cpp/SharedItems/MutableValue.cpp",
+    "../Common/cpp/SharedItems/MutableValueSetterProxy.cpp",
+    "../Common/cpp/SharedItems/RemoteObject.cpp",
+    "../Common/cpp/SharedItems/ShareableValue.cpp",
+    "../Common/cpp/Tools/JSIStoreValueUser.cpp",
+    "../Common/cpp/Tools/Mapper.cpp",
+    "../Common/cpp/Tools/RuntimeDecorator.cpp",
+    "../Common/cpp/Tools/Scheduler.cpp",
+    "../Common/cpp/Tools/WorkletEventHandler.cpp",
+  ]
+
+  deps = [
+    "//react-native/ReactCommon/callinvoker",
+    "//react-native/ReactCommon/jsi:jsi",
+    "//react-native/ReactCommon/react/nativemodule/core",
+  ]
+
+  configs -= [ "//build/config/compiler:no_rtti" ]
+  configs += [ "//build/config/compiler:rtti" ]
+  configs -= [ "//build/config/compiler:no_exceptions" ]
+  configs += [ "//build/config/compiler:exceptions" ]
+
+  if (is_clang) {
+    configs -= [ "//build/config/clang:find_bad_constructs" ]
+  }
+ 
+  public_configs = [ ":ReanimatedModule_common_config" ]
+}
+
+rn_cxx_component("RSReanimatedModule") {
+  sources = [
+    "native/REAErrorHandler.cpp",
+    "native/REAErrorHandler.h",
+    "native/REALogger.cpp",
+    "native/REALogger.h",
+    "native/REAScheduler.cpp",
+    "native/REAScheduler.h",
+    "native/RSProxy.cpp",
+    "native/RSProxy.h",
+    "RSReanimatedModule.cpp",
+    "RSReanimatedModule.h",
+  ]
+  
+  deps = [
+    ":ReanimatedModule_common",
+    "//folly:synchronization",
+    "//react-native/ReactCommon/callinvoker",
+    "//react-native/ReactCommon/jsi:jsi",
+    "//react-native/ReactCommon/react/nativemodule/core",
+    "//react-native/ReactCommon/runtimeexecutor",
+    "//skia",
+  ]
+
+  public_configs = [ ":ReanimatedModule_config" ]
+  with_exceptions = true
+  with_rtti = true
+}
