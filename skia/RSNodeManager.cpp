@@ -242,10 +242,6 @@ inline void RSNodeManager::stopUpdatingOnAnimationFrame() {
 void RSNodeManager::synchronouslyUpdateViewOnUiThread(int viewTag , folly::dynamic newViewProps) {
   RNS_LOG_DEBUG("synchronouslyUpdatViewOnUiThread for viewTag:" << viewTag);
   reanimatedModule_->getUIManager()->updateViewForReactTag(viewTag,newViewProps);
-  //FIXME This need to be removed,when compositor support frame update callback
-  if(animating_) {
-    onAnimationFrame();
-  }
 }
 
 void RSNodeManager::enqueueUpdateViewOnNativeThread(int viewTag , folly::dynamic newViewProps) {
