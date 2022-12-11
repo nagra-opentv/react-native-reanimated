@@ -7,9 +7,11 @@
 #include <cxxreact/JsArgumentHelpers.h>
 #include <cxxreact/Instance.h>
 
+#include "ReactSkia/ReactSkiaApp.h"
 #include "ReactSkia/utils/RnsLog.h"
 
 #include "native/RSProxy.h"
+#include "RSNodeManager.h"
 #include "RSReanimatedModule.h"
 
 namespace facebook {
@@ -18,12 +20,15 @@ namespace xplat {
 using namespace folly;
 using namespace reanimated;
 
+
 RSReanimatedModule::RSReanimatedModule() {
-  //TODO Nodemanager handle create
+  nodeManager_ = new RSNodeManager(this);
 }
 
 RSReanimatedModule::~RSReanimatedModule() {
-  //TODO Nodemanager handle delete
+  if(nodeManager_) {
+    delete nodeManager_;
+  }
 }
 
 auto RSReanimatedModule::getConstants() -> std::map<std::string, folly::dynamic> {
@@ -38,132 +43,132 @@ auto RSReanimatedModule::getMethods() -> std::vector<Method> {
   return {
       Method(
           "createNode",
-          [] (dynamic args) {
+          [this] (dynamic args) {
             if(args.size() !=2) {
               RNS_LOG_ERROR("RSReanimatedModule::createNode invalid args");
               return;
             }
-            RNS_LOG_NOT_IMPL;
+            nodeManager_->createNode(args[0].asInt(), args[1]);
             return;
           }),
       Method(
           "dropNode",
-          [] (dynamic args) {
+          [this] (dynamic args) {
             if(args.size() !=1) {
               RNS_LOG_ERROR("RSReanimatedModule::dropNode invalid args");
               return;
             }
-            RNS_LOG_NOT_IMPL;
+            nodeManager_->dropNode(args[0].asInt());
             return;
           }),
       Method(
           "getValue",
-          [] (dynamic args,CxxModule::Callback cb) {
+          [this] (dynamic args,CxxModule::Callback cb) {
             if(args.size() !=1) {
               RNS_LOG_ERROR("RSReanimatedModule::getValue invalid args");
               return;
             }
-            RNS_LOG_NOT_IMPL;
+            nodeManager_->getValue(args[0].asInt(), cb);
             return;
           }),
       Method(
           "setValue",
-          [] (dynamic args) {
+          [this] (dynamic args) {
             if(args.size() !=2) {
               RNS_LOG_ERROR("RSReanimatedModule::setValue invalid args");
               return;
             }
-            RNS_LOG_NOT_IMPL;
+            nodeManager_->setValue(args[0].asInt(), args[1].asInt());
             return;
           }),
       Method(
           "connectNodes",
-          [] (dynamic args) {
+          [this] (dynamic args) {
             if(args.size() !=2) {
               RNS_LOG_ERROR("RSReanimatedModule::connectNodes invalid args");
               return;
             }
-            RNS_LOG_NOT_IMPL;
+            nodeManager_->connectNodes(args[0].asInt(), args[1].asInt());
             return;
           }),
       Method(
           "disconnectNodes",
-          [] (dynamic args) {
+          [this] (dynamic args) {
             if(args.size() !=2) {
               RNS_LOG_ERROR("RSReanimatedModule::disconnectNodes invalid args");
               return;
             }
-            RNS_LOG_NOT_IMPL;
+            nodeManager_->disconnectNodes(args[0].asInt(), args[1].asInt());
             return;
           }),
       Method(
           "connectNodeToView",
-          [] (dynamic args){
+          [this] (dynamic args){
             if(args.size() !=2) {
               RNS_LOG_ERROR("RSReanimatedModule::connectNodeToView invalid args");
               return;
             }
-            RNS_LOG_NOT_IMPL;
+            nodeManager_->connectNodeToView(args[0].asInt(), args[1].asInt());
             return;
           }),
       Method(
           "disconnectNodeFromView",
-          [] (dynamic args){
+          [this] (dynamic args){
             if(args.size() !=2) {
               RNS_LOG_ERROR("RSReanimatedModule::disconnectNodeFromView invalid args");
               return;
             }
-            RNS_LOG_NOT_IMPL;
+            nodeManager_->disconnectNodeFromView(args[0].asInt(), args[1].asInt());
             return;
           }),
       Method(
           "attachEvent",
-          [] (dynamic args) {
+          [this] (dynamic args) {
             if(args.size() !=3) {
               RNS_LOG_ERROR("RSReanimatedModule::attachEvent invalid args");
               return;
             }
-            RNS_LOG_NOT_IMPL;
+            nodeManager_->attachEvent(args[0].asInt(), args[1].asString(), args[2].asInt());
             return;
           }),
       Method(
           "detachEvent",
-          [] (dynamic args) {
+          [this] (dynamic args) {
             if(args.size() !=3) {
               RNS_LOG_ERROR("RSReanimatedModule::detachEvent invalid args");
               return;
             }
-            RNS_LOG_NOT_IMPL;
+            nodeManager_->detachEvent(args[0].asInt(), args[1].asString(), args[2].asInt());
             return;
           }),
       Method(
           "configureProps",
-          [] (dynamic args) {
-            RNS_LOG_NOT_IMPL;
+          [this] (dynamic args) {
+            nodeManager_->configureProps(jsArgAsArray(args,0),jsArgAsArray(args,1));
             return;
           }),
       Method(
           "addListener",
           [] (dynamic args) {
-            RNS_LOG_NOT_IMPL;
+            RNS_LOG_TODO("RSReanimatedModule::addListener:" << args[0]);
             return;
           }),
       Method(
           "removeListeners",
           [] (dynamic args) {
-            RNS_LOG_NOT_IMPL;
+            RNS_LOG_TODO("RSReanimatedModule::removeListeners: " << args[0]);
             return;
           }),
       Method(
           "removeAllListeners",
           [] (dynamic args) {
-            RNS_LOG_NOT_IMPL;
+            RNS_LOG_TODO("RSReanimatedModule::removeAllListeners");
             return;
           }),
       Method(
           "animateNextTransition",
           [] (dynamic args) {
-            RNS_LOG_NOT_IMPL;
+            RNS_LOG_TODO("RSReanimatedModule::animateNextTransition");
             return;
           }),
       Method(
@@ -179,8 +184,8 @@ auto RSReanimatedModule::getMethods() -> std::vector<Method> {
           }),
       Method(
           "triggerRender",
-          [] (dynamic args) {
-            RNS_LOG_NOT_IMPL;
+          [this] (dynamic args) {
+            nodeManager_->triggerRender();
             return;
           }),
   };
@@ -197,6 +202,15 @@ void RSReanimatedModule::sendEventWithName(std::string eventName, folly::dynamic
   }
 }
 
+uimanager::UimanagerModule* RSReanimatedModule::getUIManager() {
+  if(uiManager_ == nullptr) {
+    auto instance = getInstance().lock();
+    if(instance) {
+      uiManager_ = static_cast<uimanager::UimanagerModule*>(ReactSkiaApp::currentBridge()->moduleForName("UIManager"));
+    }
+  }
+  return uiManager_;
+}
 
 #ifdef __cplusplus
 extern "C" {

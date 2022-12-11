@@ -7,7 +7,10 @@
 #pragma once
 #include <cxxreact/CxxModule.h>
 
+#include "ReactSkia/LegacyNativeModules/uimanager/UiManagerModule.h"
 #include "ReactSkia/utils/RnsUtils.h"
+
+#include "RSNodeManager.h"
 
 namespace facebook {
 namespace xplat {
@@ -21,13 +24,19 @@ class RSReanimatedModule : public module::CxxModule {
   std::string getName();
 
   void sendEventWithName(std::string eventName , folly::dynamic eventData);
+
+  uimanager::UimanagerModule* getUIManager();
+
+ private:
+  reanimated::RSNodeManager* nodeManager_{nullptr};
+  uimanager::UimanagerModule* uiManager_{nullptr};
 };
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-RNS_USED xplat::module::CxxModule* RSReanimatedModuleCls(void);	
+RNS_USED xplat::module::CxxModule* RSReanimatedModuleCls(void);
 
 #ifdef __cplusplus
 }
