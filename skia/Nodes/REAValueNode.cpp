@@ -16,7 +16,7 @@ REANodeHandle REAValueNodeProvider(REANodeID nodeId,folly::dynamic nodeConfig) {
 REAValueNode::REAValueNode(REANodeID nodeId,folly::dynamic nodeConfig)
   : REANode(nodeId,nodeConfig) {
 
-  value_ = nodeConfig["value"].isNull()? 0 : nodeConfig["value"].getDouble();
+  value_ = nodeConfig["value"].isNull()? 0 : nodeConfig["value"];
   RNS_LOG_DEBUG("REAValueNode nodeID:" << nodeId << " value:" << value_);
 }
 
@@ -24,7 +24,7 @@ REAValueNode::~REAValueNode() {
 }
 
 void REAValueNode::setValue(REANodeData value) {
-  value_ = value.isNull() ? REAValueEmpty : value.getDouble();
+  value_ = value.isNull() ? REAValueEmpty : value;
   RNS_LOG_DEBUG("REAValueNode nodeID:" << getNodeID() << " Setvalue:" << value_);
 }
 

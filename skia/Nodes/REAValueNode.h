@@ -19,7 +19,7 @@ class REAValueNode : public REANode {
   REANodeData evaluate() override;
 
  private:
-  REAValue value_{0.0};
+  folly::dynamic value_;
 };
 
 

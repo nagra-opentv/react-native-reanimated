@@ -10,10 +10,13 @@
 namespace reanimated {
 
 #define REA_REDUCE(operation) [this](folly::dynamic inputNodes){ \
-  double acc = getNodeData(inputNodes[0].asInt()).asDouble(); \
+  /*TODO Handle extraction of numeric value from string value*/\
+  REANodeData value = getNodeData(inputNodes[0].asInt()); \
+  double acc = value.isString() ? 0 : value.asDouble();\
   for(int i=1 ; i < inputNodes.size() ; i++) { \
     double a = acc; \
-    double b = getNodeData(inputNodes[i].asInt()).asDouble(); \
+    value = getNodeData(inputNodes[i].asInt()); \
+    double b = value.isString()? 0 : value.asDouble(); \
     acc = operation; \
     RNS_LOG_TRACE("node " << inputNodes[i-1] << "," << inputNodes[i] << " = " << a << "," << b << "=" << acc);\
   } \
@@ -21,28 +24,39 @@ namespace reanimated {
 }
 
 #define REA_SINGLE(operation) [this](folly::dynamic inputNodes){ \
-  double a = getNodeData(inputNodes[0].asInt()).asDouble(); \
+  /*TODO Handle extraction of numeric value from string value*/\
+  REANodeData value = getNodeData(inputNodes[0].asInt()); \
+  double a = value.isString() ? 0 : value.asDouble(); \
   return operation; \
 }
 
 #define REA_INFIX(operation) [this](folly::dynamic inputNodes){ \
-  double a = getNodeData(inputNodes[0].asInt()).asDouble(); \
-  double b = getNodeData(inputNodes[1].asInt()).asDouble(); \
+  /*TODO Handle extraction of numeric value from string value*/\
+  REANodeData value = getNodeData(inputNodes[0].asInt()); \
+  double a = value.isString() ? 0 : value.asDouble(); \
+  value = getNodeData(inputNodes[1].asInt()); \
+  double b = value.isString() ? 0 : value.asDouble(); \
   return operation; \
 }
 
 #define REA_AND_OP [this](folly::dynamic inputNodes){ \
-  bool res = getNodeData(inputNodes[0].asInt()).asDouble(); \
+  /*TODO Handle extraction of numeric value from string value*/\
+  REANodeData value = getNodeData(inputNodes[0].asInt()); \
+  bool res = value.isString() ? 0 : value.asBool(); \
   for(int i=1 ; i < inputNodes.size() && res ; i++) { \
-    res = res && getNodeData(inputNodes[i].asInt()).asDouble(); \
+    value = getNodeData(inputNodes[i].asInt()); \
+    res = res && (value.isString() ? 0 : value.asDouble()); \
   } \
   return res ? 1.0 : 0.0 ; \
 }
 
 #define REA_OR_OP [this](folly::dynamic inputNodes){ \
-  bool res = getNodeData(inputNodes[0].asInt()).asDouble(); \
+  /*TODO Handle extraction of numeric value from string value*/\
+  REANodeData value = getNodeData(inputNodes[0].asInt()); \
+  bool res = value.isString() ? 0 : value.asBool(); \
   for(int i=1 ; i < inputNodes.size() && (!res) ; i++) { \
-    res = res || getNodeData(inputNodes[i].asInt()).asDouble(); \
+    value = getNodeData(inputNodes[i].asInt()); \
+    res = res || (value.isString() ? 0 : value.asDouble()); \
   } \
   return res ? 1.0 : 0.0 ; \
 }
