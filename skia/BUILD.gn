@@ -6,17 +6,8 @@ config("ReanimatedModule_config") {
   include_dirs = [
     ".",
   ]
-  cflags_cc = [ "-Wno-ignored-qualifiers"]
-}
-
-config("ReanimatedModule_common_config") {
-  cflags_cc = [ "-std=c++17"]
-  cflags_cc += [
-    "-Wno-header-hygiene",
-    "-Wno-sign-compare",
-    "-Wno-unreachable-code",
-  ]
-  include_dirs = [ 
+  #Common header files
+  include_dirs += [
     "..",
     "../Common/cpp/headers/NativeModules/",
     "../Common/cpp/headers/Registries/",
@@ -25,43 +16,16 @@ config("ReanimatedModule_common_config") {
     "../Common/cpp/headers/SharedItems/",
     "../Common/cpp/headers/Tools/",
   ]
-}
 
-source_set("ReanimatedModule_common") {
-  sources = [
-    "../Common/cpp/NativeModules/NativeReanimatedModule.cpp",
-    "../Common/cpp/NativeModules/NativeReanimatedModuleSpec.cpp",
-    "../Common/cpp/Registries/EventHandlerRegistry.cpp",
-    "../Common/cpp/Registries/MapperRegistry.cpp",
-    "../Common/cpp/Registries/WorkletsCache.cpp",
-    "../Common/cpp/SharedItems/FrozenObject.cpp",
-    "../Common/cpp/SharedItems/MutableValue.cpp",
-    "../Common/cpp/SharedItems/MutableValueSetterProxy.cpp",
-    "../Common/cpp/SharedItems/RemoteObject.cpp",
-    "../Common/cpp/SharedItems/ShareableValue.cpp",
-    "../Common/cpp/Tools/JSIStoreValueUser.cpp",
-    "../Common/cpp/Tools/Mapper.cpp",
-    "../Common/cpp/Tools/RuntimeDecorator.cpp",
-    "../Common/cpp/Tools/Scheduler.cpp",
-    "../Common/cpp/Tools/WorkletEventHandler.cpp",
+  cflags_cc = [ "-Wno-ignored-qualifiers"]
+  #Common cpp flags required
+  cflags_cc += [ "-std=c++17"]
+  cflags_cc += [
+    "-Wno-header-hygiene",
+    "-Wno-sign-compare",
+    "-Wno-unreachable-code",
+    "-Wno-implicit-fallthrough",
   ]
-
-  deps = [
-    "//react-native/ReactCommon/callinvoker",
-    "//react-native/ReactCommon/jsi:jsi",
-    "//react-native/ReactCommon/react/nativemodule/core",
-  ]
-
-  configs -= [ "//build/config/compiler:no_rtti" ]
-  configs += [ "//build/config/compiler:rtti" ]
-  configs -= [ "//build/config/compiler:no_exceptions" ]
-  configs += [ "//build/config/compiler:exceptions" ]
-
-  if (is_clang) {
-    configs -= [ "//build/config/clang:find_bad_constructs" ]
-  }
- 
-  public_configs = [ ":ReanimatedModule_common_config" ]
 }
 
 rn_cxx_component("RSReanimatedModule") {
@@ -117,9 +81,26 @@ rn_cxx_component("RSReanimatedModule") {
     "RSReanimatedModule.cpp",
     "RSReanimatedModule.h",
   ]
-  
+  # Common cpp files
+  sources += [
+    "../Common/cpp/NativeModules/NativeReanimatedModule.cpp",
+    "../Common/cpp/NativeModules/NativeReanimatedModuleSpec.cpp",
+    "../Common/cpp/Registries/EventHandlerRegistry.cpp",
+    "../Common/cpp/Registries/MapperRegistry.cpp",
+    "../Common/cpp/Registries/WorkletsCache.cpp",
+    "../Common/cpp/SharedItems/FrozenObject.cpp",
+    "../Common/cpp/SharedItems/MutableValue.cpp",
+    "../Common/cpp/SharedItems/MutableValueSetterProxy.cpp",
+    "../Common/cpp/SharedItems/RemoteObject.cpp",
+    "../Common/cpp/SharedItems/ShareableValue.cpp",
+    "../Common/cpp/Tools/JSIStoreValueUser.cpp",
+    "../Common/cpp/Tools/Mapper.cpp",
+    "../Common/cpp/Tools/RuntimeDecorator.cpp",
+    "../Common/cpp/Tools/Scheduler.cpp",
+    "../Common/cpp/Tools/WorkletEventHandler.cpp",
+  ]
+
   deps = [
-    ":ReanimatedModule_common",
     "//folly:synchronization",
     "//react-native/ReactCommon/callinvoker",
     "//react-native/ReactCommon/jsi:jsi",
@@ -131,7 +112,14 @@ rn_cxx_component("RSReanimatedModule") {
     "//skia",
   ]
 
-  public_configs = [ ":ReanimatedModule_config" ]
+  # Common cpp dependencies
+  deps += [
+    "//react-native/ReactCommon/callinvoker",
+    "//react-native/ReactCommon/jsi:jsi",
+    "//react-native/ReactCommon/react/nativemodule/core",
+  ]
+
   with_exceptions = true
   with_rtti = true
+  public_configs = [ ":ReanimatedModule_config" ]
 }

@@ -32,16 +32,6 @@ class RSReanimatedModule : public module::CxxModule {
   uimanager::UimanagerModule* uiManager_{nullptr};
 };
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-RNS_USED xplat::module::CxxModule* RSReanimatedModuleCls(void);
-
-#ifdef __cplusplus
-}
-#endif
-
 }// namespace xplat
 }// namespace facebook
 
