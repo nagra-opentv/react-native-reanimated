@@ -10,7 +10,7 @@
 
 namespace reanimated {
 
-REANode::REANode(REANodeID nodeId,folly::dynamic nodeConfig) 
+REANode::REANode(REANodeID nodeId,folly::dynamic nodeConfig)
   : nodeID_(nodeId) {
 }
 
@@ -20,6 +20,7 @@ REANode::~REANode() {
 void REANode::addChild(REANodeHandle childNode) {
   if(childNode != nullptr) {
     childNodes_.push_back(childNode);
+    childNode->scheduleEvaluate();
   }
 }
   
@@ -35,6 +36,8 @@ void REANode::removeChild(REANodeHandle childNode) {
 }
 
 void REANode::runPropUpdates(std::vector<REAFinalNode*>& finalNodeList) {
+  //TODO : PROCESS UPDATED NODES
+  //Traverse all updated nodes and get the final Nodes list and process
   while(finalNodeList.size()) {
     REAFinalNode* node = finalNodeList.back();
     node->update();
@@ -47,7 +50,8 @@ REANodeData REANode::evaluate() {
 }
 
 REANodeData REANode::value() {
-  //TODO Provide value from memoized value
+  //TODO : MEMOIZED VALUES
+  //Process and save the process nodes value and use the same in next evaluation
   REANodeData value = evaluate();
   return value;
 }
@@ -93,10 +97,12 @@ void REANode::enqueueUpdateViewOnNativeThread(REAValueI viewTag,folly::dynamic n
 }
 
 void REANode::scheduleEvaluate() {
+  //TODO : PROCESS UPDATED NODES
+  //Add the node to updatedNodes list
   nodeManager->postRunUpdatesAfterAnimation(this);
 }
 
-void REANode::postOnAnimation(std::function<void()> animationCallback) {
+void REANode::postOnAnimation(REAAnimationClb animationCallback) {
   nodeManager->postOnAnimation(nodeID_, animationCallback);
 }
 

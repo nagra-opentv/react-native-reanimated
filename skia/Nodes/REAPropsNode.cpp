@@ -55,7 +55,7 @@ REANodeData REAPropsNode::evaluate() {
 
   for(auto &prop : propsConfig_.items()) {
     REANodeHandle node = getNode(prop.second.asInt());
-    if(isInstance(node,REAStyleNode)) {
+    if(isStyleNodeInstance(node)) {
       folly::dynamic styleNodeValue = node->value();
       for(auto &style : styleNodeValue.items()) {
         updateProps(style.first.asString() , style.second);

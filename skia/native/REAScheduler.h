@@ -12,11 +12,14 @@
 #include <ReactCommon/CallInvoker.h>
 
 #include "ReactSkia/utils/RnsLog.h"
+#include "ReactSkia/utils/RnsUtils.h"
 #include "rns_shell/platform/linux/TaskLoop.h"
 
 #include "Scheduler.h"
 
 namespace reanimated {
+
+#define USE_SCHEDULER_OWN_TASKRUNNER (1)// Schedule UI jobs on own task runner
 
 class REAScheduler : public Scheduler {
  public:
@@ -25,9 +28,11 @@ class REAScheduler : public Scheduler {
   void scheduleOnUI(std::function<void()> job) override;
 
  private:
+#if USE(SCHEDULER_OWN_TASKRUNNER)
   void schedulerTaskThread();
   std::unique_ptr<RnsShell::TaskLoop> schedulerTaskRunner_{nullptr};
   std::thread schedulerThread_;
+#endif
 };
 
 } // namespace reanimated

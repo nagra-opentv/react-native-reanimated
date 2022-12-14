@@ -29,7 +29,7 @@ REACallFuncNode::~REACallFuncNode() {
 inline void REACallFuncNode::beginContext() {
   for(int i=0; i< params_.size() ; i++) {
     REANodeHandle node = getNode(params_[i].asInt());
-    if(node && isInstance(node,REAParamNode)) {
+    if(node && isParamNodeInstance(node)) {
       REAParamNode* param = static_cast<REAParamNode*>(node);
       param->beginContext(args_[i]);
     }
@@ -39,7 +39,7 @@ inline void REACallFuncNode::beginContext() {
 inline void REACallFuncNode::endContext() {
   for(int i=0; i< params_.size() ; i++) {
     REANodeHandle node = getNode(params_[i].asInt());
-    if(node && isInstance(node,REAParamNode)) {
+    if(node && isParamNodeInstance(node)) {
       REAParamNode* param = static_cast<REAParamNode*>(node);
       param->endContext();
     }
@@ -54,7 +54,6 @@ REANodeData REACallFuncNode::evaluate() {
   endContext();
 
   return whatValue;
-
 }
 
 }// namespace reanimated

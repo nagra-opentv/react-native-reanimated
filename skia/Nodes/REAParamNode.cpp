@@ -36,27 +36,25 @@ void REAParamNode::endContext() {
 
 void REAParamNode::start() {
   REANodeHandle node = getNode(argsStack_.back());
-  if(isInstance(node,REAParamNode)) {
+  if(isParamNodeInstance(node)) {
     (static_cast<REAParamNode*>(node))->start();
   } else {
     (static_cast<REAClockNode*>(node))->start();
   }
-
 }
 
 void REAParamNode::stop() {
   REANodeHandle node = getNode(argsStack_.back());
-  if(isInstance(node,REAParamNode)) {
+  if(isParamNodeInstance(node)) {
     (static_cast<REAParamNode*>(node))->stop();
   } else {
     (static_cast<REAClockNode*>(node))->stop();
   }
-
 }
 
 bool REAParamNode::isRunning() {
   REANodeHandle node = getNode(argsStack_.back());
-  if(isInstance(node,REAParamNode)) {
+  if(isParamNodeInstance(node)) {
     return (static_cast<REAParamNode*>(node))->isRunning();
   } else {
     return (static_cast<REAClockNode*>(node))->isRunning;

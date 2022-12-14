@@ -92,30 +92,27 @@ REANodeData REAClockOpNode::evaluate() {
 }
 
 void REAClockOpNode::startNode(REANodeHandle node) {
-  if(isInstance(node,REAParamNode)) {
+  if(isParamNodeInstance(node)) {
     (static_cast<REAParamNode*>(node))->start();
   } else {
     (static_cast<REAClockNode*>(node))->start();
   }
-
 }
 
 void REAClockOpNode::stopNode(REANodeHandle node) {
-  if(isInstance(node,REAParamNode)) {
+  if(isParamNodeInstance(node)) {
     (static_cast<REAParamNode*>(node))->stop();
   } else {
     (static_cast<REAClockNode*>(node))->stop();
   }
-
 }
 
 REANodeData REAClockOpNode::testNode(REANodeHandle node) {
-  if(isInstance(node,REAParamNode)) {
+  if(isParamNodeInstance(node)) {
     return (static_cast<REAParamNode*>(node))->isRunning() ? 1 : 0;
   } else {
-    return (static_cast<REAClockNode*>(node))->isRunning ? 1 : 0;
+    return (static_cast<REAClockNode*>(node))->isRunning;
   }
-
 }
 
 

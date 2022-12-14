@@ -16,17 +16,19 @@
 namespace reanimated {
 
 using REANodeProviderProtocol = reanimated::REANode*(*)(int,folly::dynamic);
+using REAAnimationClb = std::function<void()>;
 typedef int REANodeID;
 typedef folly::dynamic REANodeData;
 typedef REANode* REANodeHandle;
-
 typedef float REAValuef;
 typedef int REAValueI;
-typedef REAValuef REAValue;
-#define REAValueEmpty 0.0
-#define REAValueNull nullptr
+#define REAValueEmpty (0.0)
 
-#define isInstance( ptr, clazz ) (dynamic_cast<const clazz*>(ptr) != NULL)
+#define isInstance( ptr, clazz ) (dynamic_cast<const clazz*>(ptr) != nullptr)
+#define isParamNodeInstance(ptr) isInstance(ptr,REAParamNode)
+#define isStyleNodeInstance(ptr) isInstance(ptr,REAStyleNode)
+#define isPropsNodeInstance(ptr) isInstance(ptr,REAPropsNode)
+#define isFinalNodeInstance(ptr) isInstance(ptr,REAFinalNode)
 
 //Class which triggers update of the node
 //Inherited today by Props and AlwaysNode
@@ -59,7 +61,7 @@ class REANode {
   void synchronouslyUpdateViewOnUiThread(REAValueI viewTag , folly::dynamic props);
   void enqueueUpdateViewOnNativeThread(REAValueI viewTag, folly::dynamic props);
   void scheduleEvaluate();
-  void postOnAnimation(std::function<void()> animationCallback);
+  void postOnAnimation(REAAnimationClb animationCallback);
   void stopPostOnAnimation();
   
   RSNodeManager* nodeManager{nullptr};

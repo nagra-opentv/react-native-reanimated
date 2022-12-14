@@ -44,23 +44,22 @@ class RSNodeManager {
 
   //Functions for internal usage by self & nodes
   REANode* findNodeById(int nodeID);
-  void sendEventWithName(std::string eventName , folly::dynamic eventData);
-  void postRunUpdatesAfterAnimation(REANode* node);
-  void postOnAnimation(int nodeID,std::function<void(void)> clb);
-  void stopPostOnAnimation(int nodeID);
-  void startUpdatingOnAnimationFrame();
-  void stopUpdatingOnAnimationFrame();
-  void onAnimationFrame(double timestamp);
-  void performOperations();
-  void synchronouslyUpdateViewOnUiThread(int viewTag, folly::dynamic newViewProps);
-  void enqueueUpdateViewOnNativeThread(int viewTag, folly::dynamic newViewProps);
+  void sendEventWithName(std::string eventName , folly::dynamic eventData); //Helper function to send events to JS
+  void postRunUpdatesAfterAnimation(REANode* node); // Node helper function : To trigger update of nodes in next animation frame
+  void postOnAnimation(int nodeID,std::function<void(void)> clb); // Node helper function : To register callbacks for animation frame notification
+  void stopPostOnAnimation(int nodeID); // Node helper function : To unregister callbacks from animation frame notification
+  void startUpdatingOnAnimationFrame(); // Node manager function : To start animation frame request
+  void stopUpdatingOnAnimationFrame();  // Node manager function : To stop animation frame request
+  void onAnimationFrame(double timestamp); // Node manager function : Callback to animation frame request
+  void performOperations(); // Node manager function : Update nodes and enqueued operations
+  void synchronouslyUpdateViewOnUiThread(int viewTag, folly::dynamic newViewProps); // Node helper function: update view props in current animation frame
+  void enqueueUpdateViewOnNativeThread(int viewTag, folly::dynamic newViewProps); // Node helper function : update view props in next animation frame
 
   double currentAnimationTimestamp{0.0};
   folly::dynamic configuredUiProps;
   folly::dynamic configuredNativeProps;
 
  private:
-  std::atomic<bool> wantRunUpdates_{true};
   facebook::better::map<int,REANode*> nodesList_;
   std::vector<REAFinalNode*> finalNodes_;
   facebook::better::map<int,std::function<void(void)>> animationCallbacks_;

@@ -25,7 +25,7 @@ class REAClockNode : public REANode {
   void start();
   void stop();
 
-  std::atomic<bool> isRunning{false};
+  bool isRunning{false};
 };
 
 class REAClockOpNode : public REANode {

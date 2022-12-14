@@ -131,6 +131,18 @@ void RSNodeManager::disconnectNodes(int parentID,int childID) {
     REANode* childNode = findNodeById(childID);
     if(childNode != nullptr) {
       parentNode->removeChild(childNode);
+
+      //TODO : PROCESS UPDATED NODES
+      //FinalNodes list to be derived from updated nodes list.
+      //Removal of the node from finalNodesList to be removed from here when we support it.
+      if(isFinalNodeInstance(childNode)) {
+        REAFinalNode *finalNode = dynamic_cast<REAFinalNode*>(childNode);
+        std::vector<REAFinalNode*>::iterator it = std::find(finalNodes_.begin(),finalNodes_.end(),finalNode);
+        if(it != finalNodes_.end()) {
+          finalNodes_.erase(it);
+        }
+      }
+
     }
   }
 }
@@ -138,7 +150,7 @@ void RSNodeManager::disconnectNodes(int parentID,int childID) {
 void RSNodeManager::connectNodeToView(int nodeID,int viewTag) {
   RNS_LOG_DEBUG("connectNodeToView nodeID:" << nodeID << " viewTag:" << viewTag);
   REANode* node = findNodeById(nodeID);
-  if((node != nullptr) && (isInstance(node,REAPropsNode))) {
+  if((node != nullptr) && (isPropsNodeInstance(node))) {
     (static_cast<REAPropsNode*>(node))->connectToView(viewTag);
   }
 }
@@ -146,7 +158,7 @@ void RSNodeManager::connectNodeToView(int nodeID,int viewTag) {
 void RSNodeManager::disconnectNodeFromView(int nodeID,int viewTag) {
   RNS_LOG_DEBUG("disconnectNodeFromView nodeID:" << nodeID << " viewTag:" << viewTag);
   REANode* node = findNodeById(nodeID);
-  if((node != nullptr) && (isInstance(node,REAPropsNode))) {
+  if((node != nullptr) && (isPropsNodeInstance(node))) {
     (static_cast<REAPropsNode*>(node))->disconnectFromView(viewTag);
   }
 }
@@ -188,7 +200,7 @@ void RSNodeManager::sendEventWithName(std::string eventName , folly::dynamic eve
   }
 }
 
-void RSNodeManager::postOnAnimation(int nodeID,std::function<void(void)> clb) {
+void RSNodeManager::postOnAnimation(int nodeID,REAAnimationClb clb) {
   animationCallbacks_[nodeID] = clb;
   startUpdatingOnAnimationFrame();
 }
@@ -203,18 +215,26 @@ void RSNodeManager::stopPostOnAnimation(int nodeID) {
 }
 
 void RSNodeManager::postRunUpdatesAfterAnimation(REANode* node) {
-  if(isInstance(node,REAFinalNode)) {
-    finalNodes_.push_back(dynamic_cast<REAFinalNode*>(node));
-  }
-  wantRunUpdates_ = true;
-  startUpdatingOnAnimationFrame();
+  //Evaluation trigger on FinalNode types only
+  if(isFinalNodeInstance(node)) {
+    //TODO : PROCESS UPDATED NODES
+    //FinalNodes list to be derived from updated nodes list.
+    //Adding to finalNodes_ to be removed from here when we support it
+    REAFinalNode * finalNode = dynamic_cast<REAFinalNode*>(node);
+    if(std::find(finalNodes_.begin(),finalNodes_.end(),finalNode) == finalNodes_.end()) {
+      finalNodes_.push_back(finalNode);
+    }
 
-  //FIXME animRequest start need to be moved to startUpdatingOnAnimationFrame
-  //We are starting here, since we do not support memoized value
-  //Today,every performOperations evaluates all nodes including ClockStartNode,
-  //Processing on clockStartNode will start animRequest again
-  //This will be avoided when we support memoized value
-  animRequest_->start();
+    startUpdatingOnAnimationFrame();
+
+    //FIXME : MEMOIZED VALUES
+    //animRequest start need to be moved to startUpdatingOnAnimationFrame
+    //We are starting here, since we do not support memoized value
+    //Today,every performOperations evaluates all nodes including ClockStartNode,
+    //Processing on clockStartNode will start animRequest again
+    //This will be avoided when we support memoized value
+    animRequest_->start();
+  }
 }
 
 inline void RSNodeManager::startUpdatingOnAnimationFrame() {
@@ -241,12 +261,12 @@ void RSNodeManager::onAnimationFrame(double timestamp) {
   if(animationCallbacks_.size() == 0) {
     stopUpdatingOnAnimationFrame();
   }
-
 }
 
 inline void RSNodeManager::performOperations() {
-  //FIXME Temporary change to take copy of finalNodes.
-  //We dont have to do copy when we support memoized value, during which we will runUpdates on only updated nodes
+  //FIXME : PROCESS UPDATED NODES
+  //Temporary change to take copy of finalNodes
+  //It will be collected when processing updated nodes, we just have to trigger runPropUpdates here
   auto finalNodesCopy = finalNodes_;
   REANode::runPropUpdates(finalNodesCopy);
 
