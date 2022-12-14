@@ -23,7 +23,7 @@ class REAParamNode : public REAValueNode {
   void start();
   void stop();
   bool isRunning();
-  void setValue(REANodeData value);
+  void setValue(REANodeData value) override;
 
  private:
   std::vector<REANodeID> argsStack_;

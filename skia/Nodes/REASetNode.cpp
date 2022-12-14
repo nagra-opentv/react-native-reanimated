@@ -28,8 +28,9 @@ REANodeData REASetNode::evaluate() {
   REANodeData newValue = getNodeData(valueNodeID_);
   REAValueNode* whatNode = static_cast<REAValueNode*>(getNode(whatNodeID_));
   if(whatNode != nullptr) {
-     whatNode->setValue(newValue);
+    whatNode->setValue(newValue);
   }
+
   RNS_LOG_DEBUG("REASetNode  newValue:" << newValue);
   return newValue;
 }

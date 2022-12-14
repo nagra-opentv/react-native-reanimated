@@ -41,6 +41,10 @@ using namespace facebook::react;
 
 RSNodeManager::RSNodeManager(RSReanimatedModule* module)
   :reanimatedModule_(module) {
+  animRequest_ = new RnsJsRequestAnimation([this](double timestamp){
+    RNS_LOG_DEBUG("[" << this->animRequest_ << "] [" << timestamp << "]");
+    onAnimationFrame(timestamp);
+  });
 }
 
 RSNodeManager::~RSNodeManager() {
@@ -184,71 +188,6 @@ void RSNodeManager::sendEventWithName(std::string eventName , folly::dynamic eve
   }
 }
 
-void RSNodeManager::scheduleEvaluate() {
-  startUpdatingOnAnimationFrame();
-
-  //TODO need to be executed on animation frame callback from renderer
-  onAnimationFrame();
-
-}
-
-void RSNodeManager::markNodeUpdated(REAFinalNode* node) {
-  finalNodes_.push_back(node);
-}
-
-inline void RSNodeManager::startUpdatingOnAnimationFrame() {
-  currentAnimationTimestamp = rns::sdk::Timer::getCurrentTimeMSecs();
-  //Enable the flag here requesting for animation frame callback
-  animating_ = true;
-}
-
-void RSNodeManager::onAnimationFrame() {
-
-  currentAnimationTimestamp = rns::sdk::Timer::getCurrentTimeMSecs();
-
-  //TODO Process the events in eventqueue here
-  auto callbacks = animationCallbacks_;
-
-  for(auto &kv : callbacks) {
-    kv.second();
-  }
-
-  performOperations();
-
-  if(animationCallbacks_.size() == 0) {
-    stopUpdatingOnAnimationFrame();
-  } else {
-    // TODO This needs to be removed
-    // Today our compositor does provide us the callback for frame update
-    // onAnimationFrame has to be called from the frame update callback,until animating_ unregistered
-#if 0 //Temporarily disabling, until animation works
-    onAnimationFrame();
-#endif
-  }
-
-}
-
-inline void RSNodeManager::performOperations() {
-  REANode::runPropUpdates(finalNodes_);
-  //TODO Process the enqueued operations/batch update operations
-}
-
-inline void RSNodeManager::stopUpdatingOnAnimationFrame() {
-  //Disable the flag here requesting for animation frame callback
-  animating_ = false;
-
-}
-
-void RSNodeManager::synchronouslyUpdateViewOnUiThread(int viewTag , folly::dynamic newViewProps) {
-  RNS_LOG_DEBUG("synchronouslyUpdatViewOnUiThread for viewTag:" << viewTag);
-  reanimatedModule_->getUIManager()->updateViewForReactTag(viewTag,newViewProps);
-}
-
-void RSNodeManager::enqueueUpdateViewOnNativeThread(int viewTag , folly::dynamic newViewProps) {
-  RNS_LOG_TODO("enqueueUpdatViewOnNativeThread");
-  //TODO:Add the updation of the view in batch operation list and it will processed in next frame update
-}
-
 void RSNodeManager::postOnAnimation(int nodeID,std::function<void(void)> clb) {
   animationCallbacks_[nodeID] = clb;
   startUpdatingOnAnimationFrame();
@@ -261,6 +200,67 @@ void RSNodeManager::stopPostOnAnimation(int nodeID) {
   if(animationCallbacks_.size() == 0) {
     stopUpdatingOnAnimationFrame();
   }
+}
+
+void RSNodeManager::postRunUpdatesAfterAnimation(REANode* node) {
+  if(isInstance(node,REAFinalNode)) {
+    finalNodes_.push_back(dynamic_cast<REAFinalNode*>(node));
+  }
+  wantRunUpdates_ = true;
+  startUpdatingOnAnimationFrame();
+
+  //FIXME animRequest start need to be moved to startUpdatingOnAnimationFrame
+  //We are starting here, since we do not support memoized value
+  //Today,every performOperations evaluates all nodes including ClockStartNode,
+  //Processing on clockStartNode will start animRequest again
+  //This will be avoided when we support memoized value
+  animRequest_->start();
+}
+
+inline void RSNodeManager::startUpdatingOnAnimationFrame() {
+  currentAnimationTimestamp = rns::sdk::Timer::getCurrentTimeMSecs();
+}
+
+inline void RSNodeManager::stopUpdatingOnAnimationFrame() {
+  animRequest_->stop();
+}
+
+void RSNodeManager::onAnimationFrame(double timestamp) {
+  currentAnimationTimestamp = timestamp;
+
+  //TODO Process the events in eventqueue here
+
+  //Take a copy of the callbacks here , since in callback new callbacks can be added
+  auto callbacks = animationCallbacks_;
+  for(auto &kv : callbacks) {
+    kv.second();
+  }
+
+  performOperations();
+
+  if(animationCallbacks_.size() == 0) {
+    stopUpdatingOnAnimationFrame();
+  }
+
+}
+
+inline void RSNodeManager::performOperations() {
+  //FIXME Temporary change to take copy of finalNodes.
+  //We dont have to do copy when we support memoized value, during which we will runUpdates on only updated nodes
+  auto finalNodesCopy = finalNodes_;
+  REANode::runPropUpdates(finalNodesCopy);
+
+  //TODO Process the enqueued operations/batch update operations
+}
+
+void RSNodeManager::synchronouslyUpdateViewOnUiThread(int viewTag , folly::dynamic newViewProps) {
+  RNS_LOG_DEBUG("synchronouslyUpdatViewOnUiThread for viewTag:" << viewTag);
+  reanimatedModule_->getUIManager()->updateViewForReactTag(viewTag,newViewProps);
+}
+
+void RSNodeManager::enqueueUpdateViewOnNativeThread(int viewTag , folly::dynamic newViewProps) {
+  RNS_LOG_TODO("enqueueUpdatViewOnNativeThread");
+  //TODO:Add the updation of the view in batch operation list and it will processed in next frame update
 }
 
 }// namespace reanimated

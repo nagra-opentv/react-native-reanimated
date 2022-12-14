@@ -8,6 +8,7 @@
 
 #include <better/map.h>
 #include <cxxreact/CxxModule.h>
+#include "ReactSkia/utils/RnsJsRaf.h"
 #include "ReactSkia/utils/RnsUtils.h"
 
 namespace facebook {
@@ -44,27 +45,27 @@ class RSNodeManager {
   //Functions for internal usage by self & nodes
   REANode* findNodeById(int nodeID);
   void sendEventWithName(std::string eventName , folly::dynamic eventData);
-  void scheduleEvaluate();
-  void markNodeUpdated(REAFinalNode* node);
-  void startUpdatingOnAnimationFrame();
-  void onAnimationFrame();
-  void performOperations();
-  void stopUpdatingOnAnimationFrame();
-  void synchronouslyUpdateViewOnUiThread(int viewTag, folly::dynamic newViewProps);
-  void enqueueUpdateViewOnNativeThread(int viewTag, folly::dynamic newViewProps);
+  void postRunUpdatesAfterAnimation(REANode* node);
   void postOnAnimation(int nodeID,std::function<void(void)> clb);
   void stopPostOnAnimation(int nodeID);
+  void startUpdatingOnAnimationFrame();
+  void stopUpdatingOnAnimationFrame();
+  void onAnimationFrame(double timestamp);
+  void performOperations();
+  void synchronouslyUpdateViewOnUiThread(int viewTag, folly::dynamic newViewProps);
+  void enqueueUpdateViewOnNativeThread(int viewTag, folly::dynamic newViewProps);
 
   double currentAnimationTimestamp{0.0};
   folly::dynamic configuredUiProps;
   folly::dynamic configuredNativeProps;
- private:
 
+ private:
+  std::atomic<bool> wantRunUpdates_{true};
   facebook::better::map<int,REANode*> nodesList_;
-  facebook::xplat::RSReanimatedModule* reanimatedModule_;
   std::vector<REAFinalNode*> finalNodes_;
   facebook::better::map<int,std::function<void(void)>> animationCallbacks_;
-  std::atomic<bool> animating_{false}; // TODO this need to be flag which is used for notify frame update callback by compositor
+  facebook::xplat::RSReanimatedModule* reanimatedModule_;
+  facebook::react::RnsJsRequestAnimation* animRequest_{nullptr};
 };
 
 }// namespace reanimated

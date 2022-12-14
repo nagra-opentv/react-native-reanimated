@@ -113,7 +113,7 @@ REANodeData REAClockOpNode::testNode(REANodeHandle node) {
   if(isInstance(node,REAParamNode)) {
     return (static_cast<REAParamNode*>(node))->isRunning() ? 1 : 0;
   } else {
-    return (static_cast<REAClockNode*>(node))->isRunning ? 0 : 0;
+    return (static_cast<REAClockNode*>(node))->isRunning ? 1 : 0;
   }
 
 }

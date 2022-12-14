@@ -93,10 +93,7 @@ void REANode::enqueueUpdateViewOnNativeThread(REAValueI viewTag,folly::dynamic n
 }
 
 void REANode::scheduleEvaluate() {
-  if(isInstance(this,REAFinalNode)) {
-    nodeManager->markNodeUpdated(dynamic_cast<REAFinalNode*>(this));
-  }
-  nodeManager->scheduleEvaluate();
+  nodeManager->postRunUpdatesAfterAnimation(this);
 }
 
 void REANode::postOnAnimation(std::function<void()> animationCallback) {

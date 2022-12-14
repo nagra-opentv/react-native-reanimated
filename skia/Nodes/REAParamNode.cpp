@@ -65,11 +65,14 @@ bool REAParamNode::isRunning() {
 }
 
 REANodeData REAParamNode::evaluate() {
-  return getNodeData(argsStack_.back());
+  REANodeData value = getNodeData(argsStack_.back());
+  RNS_LOG_DEBUG("ParamNode[" << getNodeID() << "] id[" << argsStack_.back() << "] value[" << value << "]");
+  return value;
 }
 
 void REAParamNode::setValue(REANodeData value) {
   REANodeHandle node = getNode(argsStack_.back());
+  RNS_LOG_DEBUG("ParamNode[" << getNodeID() << "] set id[" << argsStack_.back() << "] value[" << value << "]");
   (static_cast<REAValueNode*>(node))->setValue(value);
 }
 

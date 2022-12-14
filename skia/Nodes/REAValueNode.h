@@ -15,7 +15,7 @@ class REAValueNode : public REANode {
  public:
   REAValueNode(REANodeID nodeId,folly::dynamic nodeConfig);
   virtual ~REAValueNode();
-  void setValue(REANodeData value);
+  virtual void setValue(REANodeData value);
   REANodeData evaluate() override;
 
  private:
