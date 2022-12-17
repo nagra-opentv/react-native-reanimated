@@ -13,7 +13,7 @@ namespace reanimated {
 
 class REAConcatNode : public REANode {
  public:
-  REAConcatNode(REANodeID nodeId,folly::dynamic nodeConfig);
+  REAConcatNode(REANodeID nodeId,folly::dynamic &nodeConfig);
   ~REAConcatNode();
   REANodeData evaluate() override;
 
@@ -22,6 +22,6 @@ class REAConcatNode : public REANode {
 };
 
 
-REANodeHandle REAConcatNodeProvider(REANodeID nodeId,folly::dynamic nodeConfig);
+REANodeHandle REAConcatNodeProvider(REANodeID nodeId,folly::dynamic &nodeConfig);
 
 }// namespace reanimated

@@ -13,7 +13,7 @@ namespace reanimated {
 
 class REABezierNode : public REANode {
  public:
-  REABezierNode(REANodeID nodeId,folly::dynamic nodeConfig);
+  REABezierNode(REANodeID nodeId,folly::dynamic &nodeConfig);
   ~REABezierNode();
   REANodeData evaluate() override;
 
@@ -34,6 +34,6 @@ class REABezierNode : public REANode {
 };
 
 
-REANodeHandle REABezierNodeProvider(REANodeID nodeId,folly::dynamic nodeConfig);
+REANodeHandle REABezierNodeProvider(REANodeID nodeId,folly::dynamic &nodeConfig);
 
 }// namespace reanimated

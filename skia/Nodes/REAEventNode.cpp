@@ -9,16 +9,16 @@
 
 namespace reanimated {
 
-REANodeHandle REAEventNodeProvider(REANodeID nodeId,folly::dynamic nodeConfig) {
+REANodeHandle REAEventNodeProvider(REANodeID nodeId,folly::dynamic &nodeConfig) {
   return new REAEventNode(nodeId,nodeConfig);
 }
 
-REAEventNode::REAEventNode(REANodeID nodeId,folly::dynamic nodeConfig)
+REAEventNode::REAEventNode(REANodeID nodeId,folly::dynamic &nodeConfig)
   : REANode(nodeId,nodeConfig) {
 
-  RNS_LOG_TODO("REAEventNode nodeID:" << nodeId);  
+  RNS_LOG_NOT_IMPL_MSG("REAEventNode");
 }
-  
+
 REAEventNode::~REAEventNode() {
 }
 

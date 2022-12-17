@@ -39,7 +39,8 @@ void createNativeReanimatedModule(react::Instance* instance) {
   std::shared_ptr<ErrorHandler> errorHandler = std::make_shared<REAErrorHandler>(scheduler);
 
   auto propObtainer = [](jsi::Runtime &rt, const int viewTag, const jsi::String &propName) -> jsi::Value {
-    RNS_LOG_TODO("propObtainer obtain props for viewTag:" << viewTag << " propName:" << propName.utf8(rt).c_str());
+    RNS_LOG_NOT_IMPL_MSG("RSProxy propObtainer");
+    RNS_LOG_DEBUG("propObtainer obtain props for viewTag:" << viewTag << " propName:" << propName.utf8(rt).c_str());
     return jsi::Value::undefined();
 
     //NSString* propNameConverted = [NSString stringWithFormat:@"%s",propName.utf8(rt).c_str()];
@@ -49,7 +50,7 @@ void createNativeReanimatedModule(react::Instance* instance) {
   };
 
   auto requestRender = [](std::function<void(double)> onRender, jsi::Runtime &rt) {
-    RNS_LOG_TODO("requestRender execute onRender task");
+    RNS_LOG_NOT_IMPL_MSG("RSProxy requestRender");
 
     //[reanimatedModule.nodesManager postOnAnimation:^(CADisplayLink *displayLink) {
     //  double frameTimestamp = displayLink.targetTimestamp * 1000;
@@ -60,7 +61,8 @@ void createNativeReanimatedModule(react::Instance* instance) {
   };
 
   auto propUpdater = [](jsi::Runtime &rt, int viewTag, const jsi::Value& viewName, const jsi::Object &props) -> void {
-    RNS_LOG_TODO("propUpdater updateProps for viewTag:" << viewTag);
+    RNS_LOG_NOT_IMPL_MSG("RSProxy propUpdater");
+    RNS_LOG_DEBUG("propUpdater updateProps for viewTag:" << viewTag);
 
     //NSString *nsViewName = [NSString stringWithCString:viewName.asString(rt).utf8(rt).c_str() encoding:[NSString defaultCStringEncoding]];
     //NSDictionary *propsDict = convertJSIObjectToNSDictionary(rt, props);
@@ -68,13 +70,15 @@ void createNativeReanimatedModule(react::Instance* instance) {
   };
 
   auto scrollToFunction = [](int viewTag, double x, double y, bool animated) {
-    RNS_LOG_TODO("scrollTo viewTag:" << viewTag << " x:" << x << " y:" << y << " animated:"<< animated);
+    RNS_LOG_NOT_IMPL_MSG("RSProxy scrollTo");
+    RNS_LOG_DEBUG("scrollTo viewTag:" << viewTag << " x:" << x << " y:" << y << " animated:"<< animated);
 
     //scrollTo(viewTag, uiManager, x, y, animated);
   };
 
   auto measuringFunction = [](int viewTag) -> std::vector<std::pair<std::string, double>> {
-    RNS_LOG_TODO("measuringFunction provide measure for viewTag:" << viewTag);
+    RNS_LOG_NOT_IMPL_MSG("RSProxy measuringFunction");
+    RNS_LOG_DEBUG("measuringFunction provide measure for viewTag:" << viewTag);
     std::vector<std::pair<std::string, double>> result;
     result.push_back({"x", 0});
     result.push_back({"y", 0});

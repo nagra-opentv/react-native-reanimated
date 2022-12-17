@@ -19,7 +19,7 @@
 
 namespace reanimated {
 
-#define USE_SCHEDULER_OWN_TASKRUNNER (1)// Schedule UI jobs on own task runner
+#define USE_SCHEDULER_OWN_TASKRUNNER (0)// Schedule UI jobs on own task runner
 
 class REAScheduler : public Scheduler {
  public:

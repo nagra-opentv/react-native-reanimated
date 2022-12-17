@@ -13,11 +13,11 @@ namespace reanimated {
 
 class REAEventNode : public REANode {
  public:
-  REAEventNode(REANodeID nodeId,folly::dynamic nodeConfig);
+  REAEventNode(REANodeID nodeId,folly::dynamic &nodeConfig);
   ~REAEventNode();
 };
 
 
-REANodeHandle REAEventNodeProvider(REANodeID nodeId,folly::dynamic nodeConfig);
+REANodeHandle REAEventNodeProvider(REANodeID nodeId,folly::dynamic &nodeConfig);
 
 }// namespace reanimated

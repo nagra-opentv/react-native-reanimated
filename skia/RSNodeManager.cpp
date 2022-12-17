@@ -97,6 +97,18 @@ void RSNodeManager::dropNode(int nodeID) {
   REANode* node = findNodeById(nodeID);
   if(node != nullptr) {
     nodesList_.erase(nodeID);
+
+    //TODO : PROCESS UPDATED NODES
+    //FinalNodes list to be derived from updated nodes list.
+    //Removal of the node from finalNodesList to be removed from here when we support it.
+    if(isFinalNodeInstance(node)) {
+      REAFinalNode *finalNode = dynamic_cast<REAFinalNode*>(node);
+      std::vector<REAFinalNode*>::iterator it = std::find(finalNodes_.begin(),finalNodes_.end(),finalNode);
+      if(it != finalNodes_.end()) {
+        finalNodes_.erase(it);
+      }
+    }
+
     delete node;
   }
 }
@@ -164,11 +176,13 @@ void RSNodeManager::disconnectNodeFromView(int nodeID,int viewTag) {
 }
 
 void RSNodeManager::attachEvent(int viewTag,std::string eventName,int eventNodeID) {
-  RNS_LOG_TODO("attachEvent viewTag:" << viewTag << " eventName:" << eventName << " eventNodeID:" << eventNodeID);
+  RNS_LOG_NOT_IMPL_MSG("attachEvent");
+  RNS_LOG_DEBUG("attachEvent viewTag:" << viewTag << " eventName:" << eventName << " eventNodeID:" << eventNodeID);
 }
 
 void RSNodeManager::detachEvent(int viewTag,std::string eventName,int eventNodeID) {
-  RNS_LOG_TODO("dettachEvent viewTag:" << viewTag << " eventName:" << eventName << " eventNodeID:" << eventNodeID);
+  RNS_LOG_NOT_IMPL_MSG("detachEvent");
+  RNS_LOG_DEBUG("dettachEvent viewTag:" << viewTag << " eventName:" << eventName << " eventNodeID:" << eventNodeID);
 }
 
 void RSNodeManager::configureProps(folly::dynamic nativeProps,folly::dynamic uiProps) {
@@ -178,14 +192,14 @@ void RSNodeManager::configureProps(folly::dynamic nativeProps,folly::dynamic uiP
 
 void RSNodeManager::setValue(int nodeID,int newValue) {
   RNS_LOG_DEBUG("setValue nodeID:" << nodeID << " newValue:" << newValue);
-  REAValueNode* valueNode = static_cast<REAValueNode*>(findNodeById(nodeID));
-  if(valueNode != nullptr) {
-    valueNode->setValue(newValue);
+  REANode* valueNode = findNodeById(nodeID);
+  if(valueNode && isValueNodeInstance(valueNode)) {
+    (static_cast<REAValueNode*>(valueNode))->setValue(newValue);
   }
 }
 
 void RSNodeManager::triggerRender() {
-  RNS_LOG_TODO("triggerRender");
+  RNS_LOG_NOT_IMPL_MSG("triggerRender");
 }
 
 REANode* RSNodeManager::findNodeById(int nodeID) {
@@ -264,11 +278,7 @@ void RSNodeManager::onAnimationFrame(double timestamp) {
 }
 
 inline void RSNodeManager::performOperations() {
-  //FIXME : PROCESS UPDATED NODES
-  //Temporary change to take copy of finalNodes
-  //It will be collected when processing updated nodes, we just have to trigger runPropUpdates here
-  auto finalNodesCopy = finalNodes_;
-  REANode::runPropUpdates(finalNodesCopy);
+  REANode::runPropUpdates(finalNodes_);
 
   //TODO Process the enqueued operations/batch update operations
 }
@@ -279,7 +289,7 @@ void RSNodeManager::synchronouslyUpdateViewOnUiThread(int viewTag , folly::dynam
 }
 
 void RSNodeManager::enqueueUpdateViewOnNativeThread(int viewTag , folly::dynamic newViewProps) {
-  RNS_LOG_TODO("enqueueUpdatViewOnNativeThread");
+  RNS_LOG_NOT_IMPL_MSG("enqueueUpdatViewOnNativeThread");
   //TODO:Add the updation of the view in batch operation list and it will processed in next frame update
 }
 

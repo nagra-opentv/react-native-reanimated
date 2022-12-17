@@ -9,11 +9,11 @@
 
 namespace reanimated {
 
-REANodeHandle REAStyleNodeProvider(REANodeID nodeId,folly::dynamic nodeConfig) {
+REANodeHandle REAStyleNodeProvider(REANodeID nodeId,folly::dynamic &nodeConfig) {
   return new REAStyleNode(nodeId,nodeConfig);
 }
 
-REAStyleNode::REAStyleNode(REANodeID nodeId,folly::dynamic nodeConfig)
+REAStyleNode::REAStyleNode(REANodeID nodeId,folly::dynamic &nodeConfig)
   : REANode(nodeId,nodeConfig) {
 
   styleConfig_ = nodeConfig["style"];

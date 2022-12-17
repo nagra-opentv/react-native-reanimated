@@ -9,11 +9,11 @@
 
 namespace reanimated {
 
-REANodeHandle REASetNodeProvider(REANodeID nodeId,folly::dynamic nodeConfig) {
+REANodeHandle REASetNodeProvider(REANodeID nodeId,folly::dynamic &nodeConfig) {
   return new REASetNode(nodeId,nodeConfig);
 }
 
-REASetNode::REASetNode(REANodeID nodeId,folly::dynamic nodeConfig)
+REASetNode::REASetNode(REANodeID nodeId,folly::dynamic &nodeConfig)
   : REANode(nodeId,nodeConfig) {
 
   whatNodeID_ = nodeConfig["what"].asInt();

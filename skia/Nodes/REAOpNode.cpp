@@ -10,7 +10,6 @@
 namespace reanimated {
 
 #define REA_REDUCE(operation) [this](folly::dynamic inputNodes){ \
-  /*TODO Handle extraction of numeric value from string value*/\
   REANodeData value = getNodeData(inputNodes[0].asInt()); \
   double acc = value.isString() ? 0 : value.asDouble();\
   for(int i=1 ; i < inputNodes.size() ; i++) { \
@@ -24,14 +23,12 @@ namespace reanimated {
 }
 
 #define REA_SINGLE(operation) [this](folly::dynamic inputNodes){ \
-  /*TODO Handle extraction of numeric value from string value*/\
   REANodeData value = getNodeData(inputNodes[0].asInt()); \
   double a = value.isString() ? 0 : value.asDouble(); \
   return operation; \
 }
 
 #define REA_INFIX(operation) [this](folly::dynamic inputNodes){ \
-  /*TODO Handle extraction of numeric value from string value*/\
   REANodeData value = getNodeData(inputNodes[0].asInt()); \
   double a = value.isString() ? 0 : value.asDouble(); \
   value = getNodeData(inputNodes[1].asInt()); \
@@ -40,7 +37,6 @@ namespace reanimated {
 }
 
 #define REA_AND_OP [this](folly::dynamic inputNodes){ \
-  /*TODO Handle extraction of numeric value from string value*/\
   REANodeData value = getNodeData(inputNodes[0].asInt()); \
   bool res = value.isString() ? 0 : value.asBool(); \
   for(int i=1 ; i < inputNodes.size() && res ; i++) { \
@@ -51,7 +47,6 @@ namespace reanimated {
 }
 
 #define REA_OR_OP [this](folly::dynamic inputNodes){ \
-  /*TODO Handle extraction of numeric value from string value*/\
   REANodeData value = getNodeData(inputNodes[0].asInt()); \
   bool res = value.isString() ? 0 : value.asBool(); \
   for(int i=1 ; i < inputNodes.size() && (!res) ; i++) { \
@@ -66,11 +61,11 @@ namespace reanimated {
   return val.isNull(); \
 }
 
-REANodeHandle REAOpNodeProvider(REANodeID nodeId,folly::dynamic nodeConfig) {
+REANodeHandle REAOpNodeProvider(REANodeID nodeId,folly::dynamic &nodeConfig) {
   return new REAOpNode(nodeId,nodeConfig);
 }
 
-REAOpNode::REAOpNode(REANodeID nodeId,folly::dynamic nodeConfig)
+REAOpNode::REAOpNode(REANodeID nodeId,folly::dynamic &nodeConfig)
   : REANode(nodeId,nodeConfig) {
 
   RNS_LOG_DEBUG("REAOpNode nodeID:" << nodeId);

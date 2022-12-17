@@ -13,7 +13,7 @@ namespace reanimated {
 
 class REATransformNode : public REANode {
  public:
-  REATransformNode(REANodeID nodeId,folly::dynamic nodeConfig);
+  REATransformNode(REANodeID nodeId,folly::dynamic &nodeConfig);
   virtual ~REATransformNode();
   REANodeData evaluate() override;
 
@@ -22,6 +22,6 @@ class REATransformNode : public REANode {
 };
 
 
-REANodeHandle REATransformNodeProvider(REANodeID nodeId,folly::dynamic nodeConfig);
+REANodeHandle REATransformNodeProvider(REANodeID nodeId,folly::dynamic &nodeConfig);
 
 }// namespace reanimated

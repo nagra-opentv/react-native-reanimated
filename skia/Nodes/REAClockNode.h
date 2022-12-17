@@ -19,7 +19,7 @@ enum ClockNodeType{
 
 class REAClockNode : public REANode {
  public:
-  REAClockNode(REANodeID nodeId,folly::dynamic nodeConfig);
+  REAClockNode(REANodeID nodeId,folly::dynamic &nodeConfig);
   virtual ~REAClockNode();
   REANodeData evaluate() override;
   void start();
@@ -30,7 +30,7 @@ class REAClockNode : public REANode {
 
 class REAClockOpNode : public REANode {
  public:
-  REAClockOpNode(REANodeID nodeId,folly::dynamic nodeConfig, ClockNodeType type);
+  REAClockOpNode(REANodeID nodeId,folly::dynamic &nodeConfig, ClockNodeType type);
   virtual ~REAClockOpNode();
   REANodeData evaluate() override;
 
@@ -43,9 +43,9 @@ class REAClockOpNode : public REANode {
   ClockNodeType clockNodeType_;
 };
 
-REANodeHandle REAClockNodeProvider(REANodeID nodeId,folly::dynamic nodeConfig);
-REANodeHandle REAClockStartNodeProvider(REANodeID nodeId,folly::dynamic nodeConfig);
-REANodeHandle REAClockStopNodeProvider(REANodeID nodeId,folly::dynamic nodeConfig);
-REANodeHandle REAClockTestNodeProvider(REANodeID nodeId,folly::dynamic nodeConfig);
+REANodeHandle REAClockNodeProvider(REANodeID nodeId,folly::dynamic &nodeConfig);
+REANodeHandle REAClockStartNodeProvider(REANodeID nodeId,folly::dynamic &nodeConfig);
+REANodeHandle REAClockStopNodeProvider(REANodeID nodeId,folly::dynamic &nodeConfig);
+REANodeHandle REAClockTestNodeProvider(REANodeID nodeId,folly::dynamic &nodeConfig);
 
 }// namespace reanimated

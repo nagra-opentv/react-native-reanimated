@@ -14,7 +14,7 @@ namespace reanimated {
 
 class REAParamNode : public REAValueNode {
  public:
-  REAParamNode(REANodeID nodeId,folly::dynamic nodeConfig);
+  REAParamNode(REANodeID nodeId,folly::dynamic &nodeConfig);
   ~REAParamNode();
 
   REANodeData evaluate() override;
@@ -29,6 +29,6 @@ class REAParamNode : public REAValueNode {
   std::vector<REANodeID> argsStack_;
 };
 
-REANodeHandle REAParamNodeProvider(REANodeID nodeId,folly::dynamic nodeConfig);
+REANodeHandle REAParamNodeProvider(REANodeID nodeId,folly::dynamic &nodeConfig);
 
 }// namespace reanimated

@@ -13,7 +13,7 @@ namespace reanimated {
 
 class REABlockNode : public REANode {
  public:
-  REABlockNode(REANodeID nodeId,folly::dynamic nodeConfig);
+  REABlockNode(REANodeID nodeId,folly::dynamic &nodeConfig);
   ~REABlockNode();
   REANodeData evaluate() override;
  private:
@@ -21,6 +21,6 @@ class REABlockNode : public REANode {
 };
 
 
-REANodeHandle REABlockNodeProvider(REANodeID nodeId,folly::dynamic nodeConfig);
+REANodeHandle REABlockNodeProvider(REANodeID nodeId,folly::dynamic &nodeConfig);
 
 }// namespace reanimated

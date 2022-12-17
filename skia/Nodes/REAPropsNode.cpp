@@ -10,11 +10,11 @@
 
 namespace reanimated {
 
-REANodeHandle REAPropsNodeProvider(REANodeID nodeId,folly::dynamic nodeConfig) {
+REANodeHandle REAPropsNodeProvider(REANodeID nodeId,folly::dynamic &nodeConfig) {
   return new REAPropsNode(nodeId,nodeConfig);
 }
 
-REAPropsNode::REAPropsNode(REANodeID nodeId,folly::dynamic nodeConfig)
+REAPropsNode::REAPropsNode(REANodeID nodeId,folly::dynamic &nodeConfig)
   : REANode(nodeId,nodeConfig) {
 
   propsConfig_ = nodeConfig["props"];
@@ -66,11 +66,6 @@ REANodeData REAPropsNode::evaluate() {
   }
 
   if(connectedViewTag_ != -1) {
-    //TODO props updation way 
-    //a.uiProps need to be updated synchronously
-    //b.nativeProps need to be updated in next frame as a batch update
-    //Today we dont have native frame update notification
-    //So we follow the supported way of updating ui & native props in next frame
     if(uiProps.size()) {
       synchronouslyUpdateViewOnUiThread(connectedViewTag_,uiProps);
     }

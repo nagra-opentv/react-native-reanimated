@@ -10,7 +10,7 @@
 
 namespace reanimated {
 
-REANode::REANode(REANodeID nodeId,folly::dynamic nodeConfig)
+REANode::REANode(REANodeID nodeId,folly::dynamic &nodeConfig)
   : nodeID_(nodeId) {
 }
 
@@ -35,13 +35,14 @@ void REANode::removeChild(REANodeHandle childNode) {
   }
 }
 
-void REANode::runPropUpdates(std::vector<REAFinalNode*>& finalNodeList) {
+void REANode::runPropUpdates(FinalNodes finalNodeList) {
   //TODO : PROCESS UPDATED NODES
   //Traverse all updated nodes and get the final Nodes list and process
-  while(finalNodeList.size()) {
-    REAFinalNode* node = finalNodeList.back();
-    node->update();
-    finalNodeList.pop_back();
+  for(auto it = finalNodeList.rbegin();it != finalNodeList.rend(); it++) {
+    REAFinalNode *finalNode = *it;
+    if(finalNode) {
+      finalNode->update();
+    }
   }
 }
 

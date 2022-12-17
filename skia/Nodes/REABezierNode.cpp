@@ -11,11 +11,11 @@ namespace reanimated {
 
 #define EPSILON 1e-5
 
-REANodeHandle REABezierNodeProvider(REANodeID nodeId,folly::dynamic nodeConfig) {
+REANodeHandle REABezierNodeProvider(REANodeID nodeId,folly::dynamic &nodeConfig) {
   return new REABezierNode(nodeId,nodeConfig);
 }
 
-REABezierNode::REABezierNode(REANodeID nodeId,folly::dynamic nodeConfig)
+REABezierNode::REABezierNode(REANodeID nodeId,folly::dynamic &nodeConfig)
   : REANode(nodeId,nodeConfig) {
 
   RNS_LOG_DEBUG("REABezierNode nodeID:" << nodeId);

@@ -13,7 +13,7 @@ namespace reanimated {
 
 class REAValueNode : public REANode {
  public:
-  REAValueNode(REANodeID nodeId,folly::dynamic nodeConfig);
+  REAValueNode(REANodeID nodeId,folly::dynamic &nodeConfig);
   virtual ~REAValueNode();
   virtual void setValue(REANodeData value);
   REANodeData evaluate() override;
@@ -23,6 +23,6 @@ class REAValueNode : public REANode {
 };
 
 
-REANodeHandle REAValueNodeProvider(REANodeID nodeId,folly::dynamic nodeConfig);
+REANodeHandle REAValueNodeProvider(REANodeID nodeId,folly::dynamic &nodeConfig);
 
 }// namespace reanimated

@@ -9,11 +9,11 @@
 
 namespace reanimated {
 
-REANodeHandle REAAlwaysNodeProvider(REANodeID nodeId,folly::dynamic nodeConfig) {
+REANodeHandle REAAlwaysNodeProvider(REANodeID nodeId,folly::dynamic &nodeConfig) {
   return new REAAlwaysNode(nodeId,nodeConfig);
 }
 
-REAAlwaysNode::REAAlwaysNode(REANodeID nodeId,folly::dynamic nodeConfig)
+REAAlwaysNode::REAAlwaysNode(REANodeID nodeId,folly::dynamic &nodeConfig)
   : REANode(nodeId,nodeConfig) {
 
   RNS_LOG_DEBUG("REAAlwaysNode nodeID:" << nodeId);

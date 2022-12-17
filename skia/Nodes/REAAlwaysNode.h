@@ -13,7 +13,7 @@ namespace reanimated {
 
 class REAAlwaysNode : public REANode,public REAFinalNode {
  public:
-  REAAlwaysNode(REANodeID nodeId,folly::dynamic nodeConfig);
+  REAAlwaysNode(REANodeID nodeId,folly::dynamic &nodeConfig);
   ~REAAlwaysNode();
   REANodeData evaluate() override;
   void update() override;
@@ -22,6 +22,6 @@ class REAAlwaysNode : public REANode,public REAFinalNode {
 
 };
 
-REANodeHandle REAAlwaysNodeProvider(REANodeID nodeId,folly::dynamic nodeConfig);
+REANodeHandle REAAlwaysNodeProvider(REANodeID nodeId,folly::dynamic &nodeConfig);
 
 }// namespace reanimated

@@ -15,7 +15,7 @@ using REAOperatorBlock = REANodeData(*)(folly::dynamic inputNodes);
 
 class REAOpNode : public REANode {
  public:
-  REAOpNode(REANodeID nodeId,folly::dynamic nodeConfig);
+  REAOpNode(REANodeID nodeId,folly::dynamic &nodeConfig);
   ~REAOpNode();
   REANodeData evaluate() override;
 
@@ -26,6 +26,6 @@ class REAOpNode : public REANode {
 };
 
 
-REANodeHandle REAOpNodeProvider(REANodeID nodeId,folly::dynamic nodeConfig);
+REANodeHandle REAOpNodeProvider(REANodeID nodeId,folly::dynamic &nodeConfig);
 
 }// namespace reanimated

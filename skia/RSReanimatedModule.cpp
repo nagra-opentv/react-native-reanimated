@@ -150,25 +150,25 @@ auto RSReanimatedModule::getMethods() -> std::vector<Method> {
       Method(
           "addListener",
           [] (dynamic args) {
-            RNS_LOG_TODO("RSReanimatedModule::addListener:" << args[0]);
+	    //TODO Handle to send only registered events
             return;
           }),
       Method(
           "removeListeners",
           [] (dynamic args) {
-            RNS_LOG_TODO("RSReanimatedModule::removeListeners: " << args[0]);
+	    //TODO Handle to send only registered events
             return;
           }),
       Method(
           "removeAllListeners",
           [] (dynamic args) {
-            RNS_LOG_TODO("RSReanimatedModule::removeAllListeners");
+	    //TODO Handle to send only registered events
             return;
           }),
       Method(
           "animateNextTransition",
           [] (dynamic args) {
-            RNS_LOG_TODO("RSReanimatedModule::animateNextTransition");
+            RNS_LOG_NOT_IMPL_MSG("RSReanimatedModule::animateNextTransition");
             return;
           }),
       Method(

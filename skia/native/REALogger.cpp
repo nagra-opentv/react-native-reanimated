@@ -11,22 +11,24 @@
 
 namespace reanimated {
 
+#define APPNAME "NATIVE_REANIMATED"
+
 std::unique_ptr<LoggerInterface> Logger::instance = std::make_unique<REALogger>();
 
 void REALogger::log(const char* str) {
-  RNS_LOG_INFO(str);
+  RNS_LOG_INFO(APPNAME << " " << str);
 }
 
 void REALogger::log(double d) {
-  RNS_LOG_INFO(d);
+  RNS_LOG_INFO(APPNAME << " " << d);
 }
 
 void REALogger::log(int i) {
-  RNS_LOG_INFO(i);
+  RNS_LOG_INFO(APPNAME << " " << i);
 }
 
 void REALogger::log(bool b) {
-  RNS_LOG_INFO((b ? "true" : "false"));
+  RNS_LOG_INFO(APPNAME << " " << (b ? "true" : "false"));
 }
 
 }// namespace reanimated

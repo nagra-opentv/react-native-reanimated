@@ -112,13 +112,6 @@ rn_cxx_component("RSReanimatedModule") {
     "//skia",
   ]
 
-  # Common cpp dependencies
-  deps += [
-    "//react-native/ReactCommon/callinvoker",
-    "//react-native/ReactCommon/jsi:jsi",
-    "//react-native/ReactCommon/react/nativemodule/core",
-  ]
-
   with_exceptions = true
   with_rtti = true
   public_configs = [ ":ReanimatedModule_config" ]

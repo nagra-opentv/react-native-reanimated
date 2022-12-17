@@ -13,7 +13,7 @@ namespace reanimated {
 
 class READebugNode : public REANode {
  public:
-  READebugNode(REANodeID nodeId,folly::dynamic nodeConfig);
+  READebugNode(REANodeID nodeId,folly::dynamic &nodeConfig);
   ~READebugNode();
   REANodeData evaluate() override;
 
@@ -23,6 +23,6 @@ class READebugNode : public REANode {
 };
 
 
-REANodeHandle READebugNodeProvider(REANodeID nodeId,folly::dynamic nodeConfig);
+REANodeHandle READebugNodeProvider(REANodeID nodeId,folly::dynamic &nodeConfig);
 
 }// namespace reanimated

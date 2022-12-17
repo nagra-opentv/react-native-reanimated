@@ -13,7 +13,7 @@ namespace reanimated {
 
 class REASetNode : public REANode {
  public:
-  REASetNode(REANodeID nodeId,folly::dynamic nodeConfig);
+  REASetNode(REANodeID nodeId,folly::dynamic &nodeConfig);
   ~REASetNode();
   REANodeData evaluate() override;
 
@@ -23,6 +23,6 @@ class REASetNode : public REANode {
 };
 
 
-REANodeHandle REASetNodeProvider(REANodeID nodeId,folly::dynamic nodeConfig);
+REANodeHandle REASetNodeProvider(REANodeID nodeId,folly::dynamic &nodeConfig);
 
 }// namespace reanimated

@@ -13,7 +13,7 @@ namespace reanimated {
 
 class REAPropsNode : public REANode, public REAFinalNode {
  public:
-  REAPropsNode(REANodeID nodeId,folly::dynamic nodeConfig);
+  REAPropsNode(REANodeID nodeId,folly::dynamic &nodeConfig);
   ~REAPropsNode();
   REANodeData evaluate() override;
   void connectToView(REAValueI viewTag);
@@ -26,6 +26,6 @@ class REAPropsNode : public REANode, public REAFinalNode {
 };
 
 
-REANodeHandle REAPropsNodeProvider(REANodeID nodeId,folly::dynamic nodeConfig);
+REANodeHandle REAPropsNodeProvider(REANodeID nodeId,folly::dynamic &nodeConfig);
 
 }// namespace reanimated

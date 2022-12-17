@@ -9,11 +9,11 @@
 
 namespace reanimated {
 
-REANodeHandle REAValueNodeProvider(REANodeID nodeId,folly::dynamic nodeConfig) {
+REANodeHandle REAValueNodeProvider(REANodeID nodeId,folly::dynamic &nodeConfig) {
   return new REAValueNode(nodeId,nodeConfig);
 }
 
-REAValueNode::REAValueNode(REANodeID nodeId,folly::dynamic nodeConfig)
+REAValueNode::REAValueNode(REANodeID nodeId,folly::dynamic &nodeConfig)
   : REANode(nodeId,nodeConfig) {
 
   value_ = nodeConfig["value"].isNull()? 0 : nodeConfig["value"];

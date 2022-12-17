@@ -9,11 +9,11 @@
 
 namespace reanimated {
 
-REANodeHandle REATransformNodeProvider(REANodeID nodeId,folly::dynamic nodeConfig) {
+REANodeHandle REATransformNodeProvider(REANodeID nodeId,folly::dynamic &nodeConfig) {
   return new REATransformNode(nodeId,nodeConfig);
 }
 
-REATransformNode::REATransformNode(REANodeID nodeId,folly::dynamic nodeConfig)
+REATransformNode::REATransformNode(REANodeID nodeId,folly::dynamic &nodeConfig)
   : REANode(nodeId,nodeConfig) {
 
   transformConfigs_ = nodeConfig["transform"];

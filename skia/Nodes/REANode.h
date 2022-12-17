@@ -15,8 +15,10 @@
 
 namespace reanimated {
 
-using REANodeProviderProtocol = reanimated::REANode*(*)(int,folly::dynamic);
+using REANodeProviderProtocol = reanimated::REANode*(*)(int,folly::dynamic &);
 using REAAnimationClb = std::function<void()>;
+using FinalNodes = std::vector<REAFinalNode*>;
+
 typedef int REANodeID;
 typedef folly::dynamic REANodeData;
 typedef REANode* REANodeHandle;
@@ -28,28 +30,30 @@ typedef int REAValueI;
 #define isParamNodeInstance(ptr) isInstance(ptr,REAParamNode)
 #define isStyleNodeInstance(ptr) isInstance(ptr,REAStyleNode)
 #define isPropsNodeInstance(ptr) isInstance(ptr,REAPropsNode)
+#define isValueNodeInstance(ptr) isInstance(ptr,REAValueNode)
 #define isFinalNodeInstance(ptr) isInstance(ptr,REAFinalNode)
 
 //Class which triggers update of the node
 //Inherited today by Props and AlwaysNode
 class REAFinalNode {
- public:	
+ public:
   virtual void update() = 0;
 };
 
-//Base class for all node types 
+
+//Base class for all node types
 class REANode {
  public:
-  REANode(REANodeID nodeID,folly::dynamic nodeConfig);	 
-  virtual ~REANode();	 
+  REANode(REANodeID nodeID,folly::dynamic &nodeConfig);
+  virtual ~REANode();
 
   void addChild(REANodeHandle childNode);
   void removeChild(REANodeHandle childNode);
-  static void runPropUpdates(std::vector<REAFinalNode*>& finalNodeList);
+  static void runPropUpdates(FinalNodes finalNodeList);
 
   virtual REANodeData evaluate();
   virtual REANodeData value();
-  
+
   REANodeHandle getNode(REANodeID nodeID);
   REANodeData getNodeData(REANodeID nodeID);
   REANodeData getCurrentAnimationTimestamp();
@@ -63,9 +67,9 @@ class REANode {
   void scheduleEvaluate();
   void postOnAnimation(REAAnimationClb animationCallback);
   void stopPostOnAnimation();
-  
+
   RSNodeManager* nodeManager{nullptr};
- 
+
  private:
   REANodeID nodeID_{0};
   std::vector<REANodeHandle> childNodes_;

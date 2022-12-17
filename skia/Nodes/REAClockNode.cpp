@@ -10,23 +10,23 @@
 
 namespace reanimated {
 
-REANodeHandle REAClockNodeProvider(REANodeID nodeId,folly::dynamic nodeConfig) {
+REANodeHandle REAClockNodeProvider(REANodeID nodeId,folly::dynamic &nodeConfig) {
   return new REAClockNode(nodeId,nodeConfig);
 }
 
-REANodeHandle REAClockStartNodeProvider(REANodeID nodeId,folly::dynamic nodeConfig) {
+REANodeHandle REAClockStartNodeProvider(REANodeID nodeId,folly::dynamic &nodeConfig) {
   return new REAClockOpNode(nodeId,nodeConfig,ClockNodeTypeStart);
 }
 
-REANodeHandle REAClockStopNodeProvider(REANodeID nodeId,folly::dynamic nodeConfig) {
+REANodeHandle REAClockStopNodeProvider(REANodeID nodeId,folly::dynamic &nodeConfig) {
   return new REAClockOpNode(nodeId,nodeConfig,ClockNodeTypeStop);
 }
 
-REANodeHandle REAClockTestNodeProvider(REANodeID nodeId,folly::dynamic nodeConfig) {
+REANodeHandle REAClockTestNodeProvider(REANodeID nodeId,folly::dynamic &nodeConfig) {
   return new REAClockOpNode(nodeId,nodeConfig,ClockNodeTypeTest);
 }
 
-REAClockNode::REAClockNode(REANodeID nodeId,folly::dynamic nodeConfig)
+REAClockNode::REAClockNode(REANodeID nodeId,folly::dynamic &nodeConfig)
   : REANode(nodeId,nodeConfig),
     isRunning{false} {
 
@@ -61,7 +61,7 @@ void REAClockNode::stop() {
 }
 
 
-REAClockOpNode::REAClockOpNode(REANodeID nodeId,folly::dynamic nodeConfig,ClockNodeType type)
+REAClockOpNode::REAClockOpNode(REANodeID nodeId,folly::dynamic &nodeConfig,ClockNodeType type)
   : REANode(nodeId,nodeConfig),
     clockNodeType_{type} {
 
